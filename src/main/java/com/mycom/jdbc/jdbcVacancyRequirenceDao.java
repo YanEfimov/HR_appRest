@@ -18,7 +18,7 @@ public class jdbcVacancyRequirenceDao implements VacancyRequirenceDao {
 	
 	private DataSource dataSource;
 	
-	@Resource(name="dataSource")
+	@Resource(name = "dataSource")
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -73,7 +73,7 @@ public class jdbcVacancyRequirenceDao implements VacancyRequirenceDao {
 
 	@Override
 	public void delete(long vacancy_id) {
-		Connection connection =null;
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SQL_DELETE);

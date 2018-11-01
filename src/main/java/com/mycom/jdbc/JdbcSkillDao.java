@@ -18,7 +18,7 @@ public class JdbcSkillDao implements SkillDao {
 
 	private DataSource dataSource;
 	
-	@Resource(name="dataSource")
+	@Resource(name = "dataSource")
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -30,7 +30,7 @@ public class JdbcSkillDao implements SkillDao {
 	}
 	
 	private List<Skill> getList(String sqlQuery){
-		List<Skill> list=new ArrayList<Skill>();
+		List<Skill> list = new ArrayList<Skill>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();

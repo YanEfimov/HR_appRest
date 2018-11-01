@@ -25,14 +25,14 @@ public class JdbcUserDao implements UserDao {
 	
 	@Override
 	public List<User> findAll() {
-		List<User> list=new ArrayList<User>();
-		Connection connection=null;
+		List<User> list = new ArrayList<User>();
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDALL);
-			ResultSet rs=statement.executeQuery();
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDALL);
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				User user=new User();
+				User user = new User();
 				user.setId(rs.getLong(User.ID_COLUMN));
 				user.setEmail(rs.getString(User.EMAIL_COLUMN));
 				user.setName(rs.getString(User.NAME_COLUMN));
@@ -57,9 +57,9 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public void insert(User user) {
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
+			connection = dataSource.getConnection();
 			PreparedStatement statement=connection.prepareStatement(SQL_INSERT);
 			statement.setString(1,user.getName());
 			statement.setString(2,user.getSurname());
@@ -83,10 +83,10 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public void update(User user) {
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_UPDATE);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_UPDATE);
 			statement.setString(1,user.getName());
 			statement.setString(2,user.getSurname());
 			statement.setString(3,user.getEmail());
@@ -109,10 +109,10 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public void delete(long user_id) {
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_DELETE);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_DELETE);
 			statement.setLong(1, user_id);
 			statement.execute();
 		} catch (SQLException e) {
@@ -130,12 +130,12 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public List<User> findAllSortName() {
-		List<User> list=new ArrayList<User>();
-		Connection connection=null;
+		List<User> list = new ArrayList<User>();
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDALLSORTNAME);
-			ResultSet rs=statement.executeQuery();
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDALLSORTNAME);
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				User user=new User();
 				user.setId(rs.getLong(User.ID_COLUMN));
@@ -162,11 +162,11 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public List<User> findByName(String name) {
-		List<User> list=new ArrayList<User>();
-		Connection connection=null;
+		List<User> list = new ArrayList<User>();
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDBYNAME);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDBYNAME);
 			statement.setString(1, name);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
@@ -195,15 +195,15 @@ public class JdbcUserDao implements UserDao {
 
 	@Override
 	public List<User> findByRole(String role) {
-		List<User> list=new ArrayList<User>();
-		Connection connection=null;
+		List<User> list = new ArrayList<User>();
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDBYROLE);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDBYROLE);
 			statement.setString(1, role);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
-				User user=new User();
+				User user = new User();
 				user.setId(rs.getLong(User.ID_COLUMN));
 				user.setEmail(rs.getString(User.EMAIL_COLUMN));
 				user.setName(rs.getString(User.NAME_COLUMN));
@@ -229,12 +229,12 @@ public class JdbcUserDao implements UserDao {
 	@Override
 	public User FindById(long id) {
 		User user = new User();
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDBYID);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDBYID);
 			statement.setLong(1, id);
-			ResultSet rs=statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				user.setId(rs.getLong(User.ID_COLUMN));
 				user.setEmail(rs.getString(User.EMAIL_COLUMN));

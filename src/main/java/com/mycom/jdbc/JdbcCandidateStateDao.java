@@ -18,7 +18,7 @@ public class JdbcCandidateStateDao implements CandidateStateDao {
 
 	private DataSource dataSource;
 	
-	@Resource(name="dataSource")
+	@Resource(name = "dataSource")
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -30,7 +30,7 @@ public class JdbcCandidateStateDao implements CandidateStateDao {
 	}
 	
 	private List<CandidateState> getList(String sqlQuery){
-		List<CandidateState> list=new ArrayList<CandidateState>();
+		List<CandidateState> list = new ArrayList<CandidateState>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();

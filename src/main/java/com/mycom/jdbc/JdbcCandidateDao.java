@@ -42,7 +42,7 @@ public class JdbcCandidateDao implements CandidateDao {
 	}
 	
 	private List<Candidate> getList(String sqlQuery){
-		List<Candidate> list=new ArrayList<Candidate>();
+		List<Candidate> list = new ArrayList<Candidate>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -77,7 +77,7 @@ public class JdbcCandidateDao implements CandidateDao {
 
 	@Override
 	public List<Candidate> findByState(String state) {
-		List<Candidate> list=new ArrayList<Candidate>();
+		List<Candidate> list = new ArrayList<Candidate>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();

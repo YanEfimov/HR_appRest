@@ -49,9 +49,9 @@ public class JdbcVacancyDao implements VacancyDao {
 		List<Vacancy> list = new ArrayList<Vacancy>();
 		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDALL);
-			ResultSet rs=statement.executeQuery();
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDALL);
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				list.add(creater(rs));
 			}
@@ -71,10 +71,10 @@ public class JdbcVacancyDao implements VacancyDao {
 
 	private List<Vacancy> getList(String sqlQuery){
 		List<Vacancy> list = new ArrayList<Vacancy>();
-		Connection connection=null;
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(sqlQuery);
+			PreparedStatement statement = connection.prepareStatement(sqlQuery);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				list.add(creater(rs));
@@ -98,10 +98,10 @@ public class JdbcVacancyDao implements VacancyDao {
 		List<Vacancy> list = new ArrayList<Vacancy>();
 		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
+			connection = dataSource.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SQL_FINDFORCREATE);
 			statement.setLong(1, idDeveloper);
-			ResultSet rs=statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				list.add(creater(rs));
 			}
@@ -157,10 +157,10 @@ public class JdbcVacancyDao implements VacancyDao {
 	@Override
 	public void update(Vacancy vacancy) {
 		jdbcvacancyrequirementdao.delete(vacancy.getId());
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_UPDATE);
+			connection = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_UPDATE);
 			statement.setString(1, vacancy.getPosition());
 			statement.setDouble(2, vacancy.getSalaryto());
 			statement.setDouble(3, vacancy.getSalaryfrom());
@@ -191,7 +191,7 @@ public class JdbcVacancyDao implements VacancyDao {
 	@Override
 	public void delete(long vacancy_id){
 		jdbcvacancyrequirementdao.delete(vacancy_id);
-		Connection connection=null;
+		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
 			PreparedStatement statement = connection.prepareStatement(SQL_DELETE);

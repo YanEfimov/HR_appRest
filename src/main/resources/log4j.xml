@@ -11,7 +11,7 @@
 	</appender>
 	
 	<!-- Application Loggers -->
-	<logger name="com.mycom.app">
+	<logger name="com.mycom.controller">
 		<level value="info" />
 	</logger>
 	

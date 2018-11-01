@@ -41,7 +41,7 @@ public class JdbcFeedBackDao implements FeedBackDao {
 		Interview interview = jdbcinterviewdao.FindById(feedback.getIdInterview());
 		User user = jdbcuserdao.FindById(feedback.getIdInterviewer());
 		feedback.setInterviewname(interview.getName());
-		feedback.setInterviewername(user.getName()+" "+user.getSurname());
+		feedback.setInterviewername(user.getName() + " " + user.getSurname());
 		return feedback;
 	}
 	

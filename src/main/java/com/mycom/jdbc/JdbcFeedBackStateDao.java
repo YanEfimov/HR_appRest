@@ -18,7 +18,7 @@ public class JdbcFeedBackStateDao implements FeedBackStateDao {
 
 	private DataSource dataSource;
 	
-	@Resource(name="dataSource")
+	@Resource(name = "dataSource")
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -30,7 +30,7 @@ public class JdbcFeedBackStateDao implements FeedBackStateDao {
 	}
 	
 	private List<FeedBackState> getList(String sqlQuery){
-		List<FeedBackState> list=new ArrayList<FeedBackState>();
+		List<FeedBackState> list = new ArrayList<FeedBackState>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();

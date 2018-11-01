@@ -1,4 +1,4 @@
-package com.mycom.app;
+package com.mycom.controller;
 
 import java.util.List;
 

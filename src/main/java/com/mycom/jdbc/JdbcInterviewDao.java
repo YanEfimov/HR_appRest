@@ -47,7 +47,7 @@ public class JdbcInterviewDao implements InterviewDao {
 	}
 	
 	private List<Interview> getList(String sqlQuery){
-		List<Interview> list=new ArrayList<Interview>();
+		List<Interview> list = new ArrayList<Interview>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
@@ -87,7 +87,7 @@ public class JdbcInterviewDao implements InterviewDao {
 
 	@Override
 	public List<Interview> FindByCandidate(long candidate_id) {
-		List<Interview> list=new ArrayList<Interview>();
+		List<Interview> list = new ArrayList<Interview>();
 		Connection connection = null;
 		try {
 			connection = dataSource.getConnection();
