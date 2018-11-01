@@ -46,8 +46,8 @@ public class JdbcVacancyDao implements VacancyDao {
 	
 	@Override
 	public List<Vacancy> findAll() {
-		List<Vacancy> list=new ArrayList<Vacancy>();
-		Connection connection=null;
+		List<Vacancy> list = new ArrayList<Vacancy>();
+		Connection connection = null;
 		try {
 			connection=dataSource.getConnection();
 			PreparedStatement statement=connection.prepareStatement(SQL_FINDALL);
@@ -70,12 +70,12 @@ public class JdbcVacancyDao implements VacancyDao {
 	}
 
 	private List<Vacancy> getList(String sqlQuery){
-		List<Vacancy> list=new ArrayList<Vacancy>();
+		List<Vacancy> list = new ArrayList<Vacancy>();
 		Connection connection=null;
 		try {
-			connection=dataSource.getConnection();
+			connection = dataSource.getConnection();
 			PreparedStatement statement=connection.prepareStatement(sqlQuery);
-			ResultSet rs=statement.executeQuery();
+			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				list.add(creater(rs));
 			}
@@ -95,11 +95,11 @@ public class JdbcVacancyDao implements VacancyDao {
 
 	@Override
 	public List<Vacancy> findByCreate(long idDeveloper) {
-		List<Vacancy> list=new ArrayList<Vacancy>();
-		Connection connection=null;
+		List<Vacancy> list = new ArrayList<Vacancy>();
+		Connection connection = null;
 		try {
 			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_FINDFORCREATE);
+			PreparedStatement statement = connection.prepareStatement(SQL_FINDFORCREATE);
 			statement.setLong(1, idDeveloper);
 			ResultSet rs=statement.executeQuery();
 			while (rs.next()) {
@@ -121,10 +121,10 @@ public class JdbcVacancyDao implements VacancyDao {
 
 	@Override
 	public void insert(Vacancy vacancy) {
-		Connection connection=null;
+		Connection connection = null;
 		try {
-			connection=dataSource.getConnection();
-			PreparedStatement statement=connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
+			connection  = dataSource.getConnection();
+			PreparedStatement statement = connection.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS);
 			statement.setString(1, vacancy.getPosition());
 			statement.setDouble(2, vacancy.getSalaryto());
 			statement.setDouble(3, vacancy.getSalaryfrom());
