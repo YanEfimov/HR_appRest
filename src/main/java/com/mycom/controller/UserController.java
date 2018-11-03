@@ -37,7 +37,6 @@ public class UserController {
 		role.put("developer", "developer");
 		model.addAttribute("user",user);
 		model.addAttribute("map",role);
-		
 		return "UserForm";
 	}
 	

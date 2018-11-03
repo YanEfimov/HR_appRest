@@ -1,6 +1,9 @@
 package com.mycom.entity;
 
-import org.hibernate.validator.constraints.Email;
+
+import com.mycom.entity.validation.Name;
+import com.mycom.entity.validation.Password;
+import com.mycom.entity.validation.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.Size;
@@ -15,14 +18,15 @@ public class User {
 	public static final String ROLE_COLUMN = "role";
 	
 	private Long id;
-	
-	@Size(min=2, max=30)
+
+	@Name
 	private String name;
-	@Size(min=2, max=30)
+	@Name
 	private String surname;
-	@NotEmpty @Email
+
+	@Email
 	private String email;
-	@Size(min=4)
+	@Password
 	private String password;
 	private String role;
 	

@@ -2,6 +2,8 @@ package com.mycom.entity;
 
 import javax.validation.constraints.*;
 
+import com.mycom.entity.validation.Date;
+import com.mycom.entity.validation.Name;
 import org.joda.time.DateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,12 +23,11 @@ public class Candidate {
 	private Long id;
 	@DecimalMax("10000.0") @DecimalMin("200") 
 	private double salary;
-	@NotNull
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @Date
 	private DateTime birthday;
-    @Size(min=2)
+    @Name
 	private String surname;
-    @Size(min=2)
+    @Name
 	private String name;
 	private String candidateState;
 	@NotNull
