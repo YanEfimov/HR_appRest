@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
+import com.mycom.entity.validation.Date;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import org.joda.time.DateTime;;
@@ -19,11 +20,9 @@ public class Interview {
 	
 	
 	private Long id;
-	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Date
 	private DateTime factDate;
-	@NotNull
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@Date
 	private DateTime planDate;
 	private long idVacancy;
 	private long idCandidate;
