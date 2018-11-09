@@ -55,16 +55,12 @@ public class SkillControllerTest {
 		controller.SkillDelete(skill.getName());
 	}
 	
-	@Test
-	public void SaveSkillTestWithError(){
+	@Test(expected = BindException.class)
+	public void SaveSkillTestWithError() throws BindException{
         BindingResult result = mock(BindingResult.class);
         when(result.hasErrors())
                 .thenReturn(true);
-        try {
-			assertEquals(controller.SaveSkill(skill, result),new BindException(result));
-		} catch (BindException e) {
-			assertEquals(true,true);
-		}
+        assertEquals(controller.SaveSkill(skill, result),new BindException(result));
 	}
 	
 	@Test

@@ -89,7 +89,7 @@ public class VacancyController {
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/SortExperience", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Vacancy> SortExperience(Model model) {
+	public List<Vacancy> SortExperience() {
 		list = jdbcvacancydao.sortForExperience();
 		return list;
 	}
