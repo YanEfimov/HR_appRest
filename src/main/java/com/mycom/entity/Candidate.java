@@ -23,7 +23,7 @@ public class Candidate {
 	private Long id;
 	@DecimalMax("10000.0") @DecimalMin("200") 
 	private double salary;
-    @Date
+    @DateTimeFormat
 	private DateTime birthday;
     @Name
 	private String surname;

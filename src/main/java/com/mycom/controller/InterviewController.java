@@ -1,108 +1,75 @@
 package com.mycom.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import com.mycom.jdbc.JdbcCandidateDao;
 import com.mycom.jdbc.JdbcInterviewDao;
-import com.mycom.jdbc.JdbcVacancyDao;
-import com.mycom.entity.Candidate;
-import com.mycom.entity.Interview;
-import com.mycom.entity.Vacancy;
 
-@Controller
+
+import com.mycom.entity.Interview;
+
+
+@RestController
+@RequestMapping("/interview")
 public class InterviewController {
 
     @Autowired
     private JdbcInterviewDao jdbcinterviewdao;
 
-    @Autowired
-    private JdbcCandidateDao jdbccandidatedao;
-
-    @Autowired
-    private JdbcVacancyDao jdbcvacancydao;
-
     private List<Interview> list;
 
-    private String CreateViewForm(Model model) {
-        model.addAttribute("list",list);
-        return "InterviewView";
-    }
-
-    private String CreateInterviewForm(Model model, Interview interview) {
-        Map<Long,String> candidates = new HashMap<Long,String>();
-        for (Candidate i:jdbccandidatedao.findAll()) {
-            candidates.put(i.getId(), i.getName()+" "+i.getSurname());
-        }
-        Map<Long,String> vacancys = new HashMap<Long,String>();
-        for (Vacancy i:jdbcvacancydao.findAll()) {
-            vacancys.put(i.getId(), i.getPosition());
-        }
-        model.addAttribute("candidates",candidates);
-        model.addAttribute("vacancys",vacancys);
-        model.addAttribute("interview",interview);
-        return "InterviewForm";
-    }
-
-    @RequestMapping(value="/InterviewView", method = RequestMethod.GET)
-    public String InterviewView(Model model) {
-        list = jdbcinterviewdao.findAll();
-        return CreateViewForm(model);
-    }
-
-    @RequestMapping(value="/InterviewCreate",method = RequestMethod.GET)
-    public String CreateInterview(Model model) {
-        return CreateInterviewForm(model,new Interview());
-    }
-
-    @RequestMapping(value = "/SaveInterview", method = RequestMethod.POST)
-    public String SaveInterview(@Valid Interview interview, BindingResult bindingResult, Model model) {
+    @ResponseStatus(HttpStatus.CREATED)
+    @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
+    @ResponseBody
+    public Interview SaveInterview(@Valid @RequestBody Interview interview, BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
-            return CreateInterviewForm(model,interview);
+            throw new BindException(bindingResult);
         }
         if (interview.getId()!=null)
             jdbcinterviewdao.update(interview);
         else
             jdbcinterviewdao.insert(interview);
-        list = jdbcinterviewdao.findAll();
-        return CreateViewForm(model);
+        return interview;
     }
 
-    @RequestMapping(value = "/InterviewEdit", method = RequestMethod.GET)
-    public String InterviewEdit(Model model,HttpServletRequest request) {
-        long id = Integer.parseInt(request.getParameter("id"));
-        return CreateInterviewForm(model,jdbcinterviewdao.FindById(id));
-    }
-
-    @RequestMapping(value = "/InterviewDelete", method = RequestMethod.GET)
-    public String InterviewDelete(Model model,HttpServletRequest request) {
-        long id = Integer.parseInt(request.getParameter("id"));
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    @ResponseBody
+    public void InterviewDelete(@RequestParam(value = "id") Long id) {
+        Interview interview = jdbcinterviewdao.FindById(id);
         jdbcinterviewdao.delete(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Interview> InterviewAll() {
         list = jdbcinterviewdao.findAll();
-        return CreateViewForm(model);
+        return list;
     }
 
-    @RequestMapping(value ="/SortPlanDate", method = RequestMethod.GET)
-    public String SortPlanDate(Model model) {
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/sortPlanDate", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Interview> InterviewSortPlanDate() {
         list = jdbcinterviewdao.SortByDatePlan();
-        return CreateViewForm(model);
+        return list;
     }
 
-    @RequestMapping(value ="/SortFactDate", method = RequestMethod.GET)
-    public String SortFactDate(Model model) {
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = "/sortFactDate", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Interview> InterviewSortFactDate() {
         list = jdbcinterviewdao.SortByDateFact();
-        return CreateViewForm(model);
+        return list;
     }
 
 }

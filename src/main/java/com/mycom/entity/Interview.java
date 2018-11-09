@@ -20,12 +20,12 @@ public class Interview {
 	
 	
 	private Long id;
-	@Date
+	@DateTimeFormat
 	private DateTime factDate;
-	@Date
+	@DateTimeFormat
 	private DateTime planDate;
-	private long idVacancy;
-	private long idCandidate;
+	private Long idVacancy;
+	private Long idCandidate;
 	@Size(min=5)
 	private String name;
 	private String candidatename;
@@ -53,13 +53,13 @@ public class Interview {
 	public long getIdVacancy() {
 		return idVacancy;
 	}
-	public void setIdVacancy(long idVacancy) {
+	public void setIdVacancy(Long idVacancy) {
 		this.idVacancy = idVacancy;
 	}
 	public long getIdCandidate() {
 		return idCandidate;
 	}
-	public void setIdCandidate(long idCandidate) {
+	public void setIdCandidate(Long idCandidate) {
 		this.idCandidate = idCandidate;
 	}
 	public Long getId() {

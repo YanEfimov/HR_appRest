@@ -1,70 +1,63 @@
 package com.mycom.controller;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import com.mycom.entity.Skill;
 import com.mycom.jdbc.JdbcSkillDao;
 
-@Controller
+@RestController
+@RequestMapping("/skill")
 public class SkillController {
 
 	@Autowired
 	private JdbcSkillDao jdbcskilldao;
 
 	private List<Skill> list;
-
-	private String CreateViewForm(Model model) {
-		list = jdbcskilldao.findAll();
-		model.addAttribute("list",list);
-		return "SkillView";
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value="/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void SkillDelete(@RequestParam(value = "name") String name) {
+		jdbcskilldao.delete(name);
 	}
 
-	private String CreateSkillForm(Model model,Skill skill) {
-		model.addAttribute("skill",skill);
-		return "SkillForm";
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Skill> getSkills() {
+		return jdbcskilldao.findAll();
 	}
 
-	@RequestMapping(value="/ViewSkillForm", method = RequestMethod.GET)
-	public String ViewSkillForm(Model model) {
-		list = jdbcskilldao.findAll();
-		return CreateViewForm(model);
-	}
-
-	@RequestMapping(value="/SkillCreate", method = RequestMethod.GET)
-	public String CreateSkill(Model model) {
-		return CreateSkillForm(model,new Skill());
-	}
-
-	@RequestMapping(value = "/SaveSkill", method = RequestMethod.POST)
-	public String SaveSkill(@Valid Skill skill, BindingResult bindingResult, Model model) {
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/save", method = RequestMethod.PUT)
+	@ResponseBody
+	public Skill SaveSkill(@Valid @RequestBody Skill skill, BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
-			return CreateSkillForm(model,skill);
+			throw new BindException(bindingResult);
 		}
 		jdbcskilldao.insert(skill);
-		return CreateViewForm(model);
+		return skill;
 	}
 
-	@RequestMapping(value = "/SkillDelete", method = RequestMethod.GET)
-	public String SkillDelete(Model model, HttpServletRequest request) {
-		String name = request.getParameter("name");
-		jdbcskilldao.delete(name);
-		list = jdbcskilldao.findAll();
-		return CreateViewForm(model);
-	}
-
-	@RequestMapping(value = "/SkillSort", method = RequestMethod.GET)
-	public String SkillSort(Model model) {
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/sort", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Skill> SkillSort() {
 		list = jdbcskilldao.sortSkill();
-		return CreateViewForm(model);
+		return list;
 	}
 }

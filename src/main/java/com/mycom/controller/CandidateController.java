@@ -1,18 +1,19 @@
 package com.mycom.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.google.gson.annotations.JsonAdapter;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import com.mycom.entity.Candidate;
 import com.mycom.entity.CandidateState;
@@ -21,7 +22,8 @@ import com.mycom.jdbc.JdbcCandidateDao;
 import com.mycom.jdbc.JdbcCandidateStateDao;
 import com.mycom.jdbc.JdbcSkillDao;
 
-@Controller
+@RestController
+@RequestMapping("/candidate")
 public class CandidateController {
 	
 	@Autowired
@@ -35,83 +37,57 @@ public class CandidateController {
 	
 	private List<Candidate> list;
 	
-	private String CreateViewForm(Model model) {
-		model.addAttribute("list",list);
-		return "CandidateView";
-	}
-	
-	private String CreateCandidateForm(Model model, Candidate candidate) {
-		Map<String,String> states = new HashMap<String,String>();
-		for (CandidateState i:jdbccandidatestatedao.FindAll()) {
-			states.put(i.getName(), i.getName());
-		}
-		Map<String,String> skills = new HashMap<String,String>();
-		for (Skill i:jdbcskilldao.findAll()) {
-			skills.put(i.getName(), i.getName());
-		}
-		model.addAttribute("skills",skills);
-		model.addAttribute("candidate",candidate);
-		model.addAttribute("candidatestate",states);
-		return "CandidateForm";
-	}
-	
-	@RequestMapping(value="/ViewCandidateForm", method = RequestMethod.GET)
-	public String ViewCandidateForm(Model model) {
-		list = jdbccandidatedao.findAll();
-		return CreateViewForm(model);
-	}
-	
-	@RequestMapping(value="/CandidateCreate",method = RequestMethod.GET)
-	public String CreateCandidate(Model model) {
-		return CreateCandidateForm(model,new Candidate());
-	}
-	
-	@RequestMapping(value = "/SaveCandidate", method = RequestMethod.POST)
-	public String SaveCandidate(@Valid Candidate candidate,BindingResult bindingResult, Model model) {
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
+	@ResponseBody
+	public Candidate SaveOrUpdate(@Valid @RequestBody Candidate candidate,BindingResult bindingResult) throws BindException {
 		if (bindingResult.hasErrors()) {
-			System.out.println(candidate.getBirthday());
-			return CreateCandidateForm(model,candidate);
+			throw new BindException(bindingResult);
 		}
 		if (candidate.getId()!=null)
 			jdbccandidatedao.update(candidate);
 		else
 			jdbccandidatedao.insert(candidate);
-		list = jdbccandidatedao.findAll();
-		return CreateViewForm(model);
+		return candidate;
 	}
 	
-	@RequestMapping(value = "CandidateEdit", method = RequestMethod.GET)
-	public String CandidateEdit(Model model, HttpServletRequest request) {
-		long id = Integer.parseInt(request.getParameter("id"));
-		return CreateCandidateForm(model,jdbccandidatedao.findById(id));
-	}
-	
-	@RequestMapping(value = "CandidateDelete", method = RequestMethod.GET)
-	public String CandidateDelete(Model model, HttpServletRequest request) {
-		long id = Integer.parseInt(request.getParameter("id"));
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void CandidateDelete(@RequestParam(value="id") Long id) {
 		jdbccandidatedao.delete(id);
-		list = jdbccandidatedao.findAll();
-		return CreateViewForm(model);
 	}
-	
-	@RequestMapping(value = "/CandidateFilter", method = RequestMethod.GET)
-	public String CandidateFilter(Model model, HttpServletRequest request) {
-		String state = request.getParameter("type");
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/filter", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Candidate> CandidateFilter(@RequestParam(value = "state") String state) {
 		list = jdbccandidatedao.findByState(state);
-		return CreateViewForm(model);
+		return list;
 	}
-	
-	@RequestMapping(value = "/CandidateSortName", method = RequestMethod.GET)
-	public String CandidateSortName(Model model) {
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/sortname", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Candidate> CandidateSortName() {
 		list = jdbccandidatedao.sortNameCandidate();
-		return CreateViewForm(model);
+		return list;
 	}
-	
-	@RequestMapping(value = "/CandidateSortSalary", method = RequestMethod.GET)
-	public String CandidateSortSalary(Model model) {
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/sortsalary", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Candidate> CandidateSortSalary() {
 		list = jdbccandidatedao.sortSalaryCandidate();
-		return CreateViewForm(model);
+		return list;
 	}
 	
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Candidate> CandidateList(){
+		list = jdbccandidatedao.findAll();
+		return list;
+	}
 	
 }

@@ -1,18 +1,22 @@
 package com.mycom.controller;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import com.mycom.entity.Skill;
 import com.mycom.entity.User;
@@ -21,7 +25,8 @@ import com.mycom.jdbc.JdbcSkillDao;
 import com.mycom.jdbc.JdbcUserDao;
 import com.mycom.jdbc.JdbcVacancyDao;
 
-@Controller
+@RestController
+@RequestMapping("/vacancy")
 public class VacancyController {
 	
 	@Autowired
@@ -34,86 +39,59 @@ public class VacancyController {
 	private JdbcUserDao jdbcuserdao;
 	
 	private static List<Vacancy> list;
-	
-	private String CreateViewForm(Model model) {
-		model.addAttribute("list", list);
-		Map<Long,String> developers = new HashMap<Long, String>();
-		for (User i:jdbcuserdao.findByRole("developer")) {
-			developers.put(i.getId(), i.getName()+" "+i.getSurname());
-		}
-		model.addAttribute("developers",developers);
-		return "VacancyView";
-	}
-	
-	private String CreateVacancyForm(Model model, Vacancy vacancy) {
-		Map<Long,String> developers = new HashMap<Long, String>();
-		for (User i:jdbcuserdao.findByRole("developer")) {
-			developers.put(i.getId(), i.getName()+" "+i.getSurname());
-		}
-		Map<String,String> skills = new HashMap<String,String>();
-		for (Skill i:jdbcskilldao.findAll()) {
-			skills.put(i.getName(), i.getName());
-		}
-		model.addAttribute("skills",skills);
-		model.addAttribute("vacancy",vacancy);
-		model.addAttribute("developers",developers);
-		return "VacancyForm";
-	}
-	
-	@RequestMapping(value="/ViewVacancyForm", method=RequestMethod.GET)
-	public String ViewVacanctFrom(Model model) {
-		list = jdbcvacancydao.findAll();
-		return CreateViewForm(model);
-	}
-	
-	@RequestMapping(value="/VacancyCreate", method=RequestMethod.GET)
-	public String CreateVacancy(Model model) {
-		return CreateVacancyForm(model,new Vacancy());
-	}
-	
-	@RequestMapping(value = "/SaveVacancy", method = RequestMethod.POST)
-	public String SaveVacancy(@Valid Vacancy vacancy,BindingResult bindingResult, Model model) {
-		if (bindingResult.hasErrors()) {
-			return CreateVacancyForm(model,vacancy);
-		}
-		if (vacancy.getId()!=null)
-			jdbcvacancydao.update(vacancy);
-		else
-			jdbcvacancydao.insert(vacancy);
-		list = jdbcvacancydao.findAll();
-		return CreateViewForm(model);
-	}
-	
-	@RequestMapping(value = "/VacancyEdit", method = RequestMethod.GET)
-	public String VacancyEdit(Model model,HttpServletRequest request) {
-		long id = Integer.parseInt(request.getParameter("id"));
-		return CreateVacancyForm(model,jdbcvacancydao.findById(id));
-	}
-	
-	@RequestMapping(value = "/VacancyDelete", method = RequestMethod.GET)
-	public String VacancyDelete(Model model,HttpServletRequest request) {
-		long id = Integer.parseInt(request.getParameter("id"));
-		jdbcvacancydao.delete(id);
-		list = jdbcvacancydao.findAll();
-		return CreateViewForm(model);
-	}
-	
-	@RequestMapping(value = "/SortSalaryTo", method = RequestMethod.GET)
-	public String SortSalaryTo(Model model) {
-		list = jdbcvacancydao.sortForSalaryTo();
-		return CreateViewForm(model);
-	}
-	
-	@RequestMapping(value = "/SortSalaryFrom", method = RequestMethod.GET)
-	public String SortSalaryFrom(Model model) {
-		list = jdbcvacancydao.sortForSalaryFrom();
-		return CreateViewForm(model);
-	}
-	
+
+	 @ResponseStatus(HttpStatus.CREATED)
+	 @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
+	 @ResponseBody
+	 public Vacancy SaveVacancy(@Valid @RequestBody Vacancy vacancy, BindingResult bindingResult) throws BindException {
+		 if (bindingResult.hasErrors()) {
+			 throw new BindException(bindingResult);
+		 }
+		 if (vacancy.getId()!=null)
+			 jdbcvacancydao.update(vacancy);
+		 else
+			 jdbcvacancydao.insert(vacancy);
+		 return vacancy;
+	 }
+
+	 @ResponseStatus(HttpStatus.NO_CONTENT)
+	 @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	 @ResponseBody
+	 public void VacancyDelete(@RequestParam(value = "id") Long id) {
+		 jdbcvacancydao.delete(id);
+	 }
+
+	 @ResponseStatus(HttpStatus.OK)
+	 @RequestMapping(value = "/list", method = RequestMethod.GET)
+	 @ResponseBody
+	 public List<Vacancy> VacancyAll() {
+		 list = jdbcvacancydao.findAll();
+		 return list;
+	 }
+
+
+	 @ResponseStatus(HttpStatus.OK)
+	 @RequestMapping(value = "/sortSalaryTo", method = RequestMethod.GET)
+	 @ResponseBody
+	 public List<Vacancy> VacancySortSalaryTo() {
+		 list = jdbcvacancydao.sortForSalaryTo();
+		 return list;
+	 }
+
+	 @ResponseStatus(HttpStatus.OK)
+	 @RequestMapping(value = "/sortSalaryFrom", method = RequestMethod.GET)
+	 @ResponseBody
+	 public List<Vacancy> VacancySortSalaryFrom() {
+		 list = jdbcvacancydao.sortForSalaryFrom();
+		 return list;
+	 }
+	 
+	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/SortExperience", method = RequestMethod.GET)
-	public String SortExperience(Model model) {
+	@ResponseBody
+	public List<Vacancy> SortExperience(Model model) {
 		list = jdbcvacancydao.sortForExperience();
-		return CreateViewForm(model);
+		return list;
 	}
 	
 }
