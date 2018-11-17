@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,13 +24,13 @@ import org.springframework.validation.BindingResult;
 
 import com.mycom.controller.InterviewController;
 import com.mycom.entity.Interview;
-import com.mycom.jdbc.JdbcInterviewDao;
+import com.mycom.service.InterviewService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InterviewControllerTest {
 
     @Mock
-    private JdbcInterviewDao dao;
+    private InterviewService service;
 
     @InjectMocks
     private InterviewController controller;
@@ -44,17 +45,17 @@ public class InterviewControllerTest {
 
         interview = new Interview();
         interview.setId(new Long(1));
-        interview.setFactDate(new DateTime("2018-12-12"));
-        interview.setPlanDate(new DateTime("2018-12-12"));
-        interview.setIdVacancy(1L);
-        interview.setIdCandidate(1L);
+        interview.setFactDate(new Date());
+        interview.setPlanDate(new Date());
+        //interview.setIdVacancy(1L);
+        //interview.setIdCandidate(1L);
         interview.setName("name");
 
         interviewUp = new Interview();
-        interviewUp.setFactDate(new DateTime("2018-12-12"));
-        interviewUp.setPlanDate(new DateTime("2018-12-12"));
-        interviewUp.setIdVacancy(1L);
-        interviewUp.setIdCandidate(1L);
+        interviewUp.setFactDate(new Date());
+        interviewUp.setPlanDate(new Date());
+        //interviewUp.setIdVacancy(1L);
+        //interviewUp.setIdCandidate(1L);
         interviewUp.setName("name");
 
         interviews = new LinkedList<Interview>();
@@ -67,7 +68,7 @@ public class InterviewControllerTest {
 
     @Test
     public void interviewAllTest() {
-        when(dao.findAll()).thenReturn(interviews);
+        when(service.findAll()).thenReturn(interviews);
         assertEquals(controller.InterviewAll(),interviews);
     }
 
@@ -90,14 +91,8 @@ public class InterviewControllerTest {
     }
 
     @Test
-    public void InterviewSortPlanDateTest() {
-        when(dao.SortByDatePlan()).thenReturn(interviews);
-        assertEquals(controller.InterviewSortPlanDate(),interviews);
-    }
-
-    @Test
-    public void InterviewSortFactDateTest() {
-        when(dao.SortByDateFact()).thenReturn(interviews);
-        assertEquals(controller.InterviewSortFactDate(),interviews);
+    public void InterviewSortTest() {
+        when(service.sort("name")).thenReturn(interviews);
+        assertEquals(controller.Sort("name"),interviews);
     }
 }

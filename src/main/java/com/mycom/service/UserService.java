@@ -1,11 +1,10 @@
-package com.mycom.dao;
-
-import com.mycom.entity.User;
+package com.mycom.service;
 
 import java.util.List;
 
-public interface UserDao {
+import com.mycom.entity.User;
 
+public interface UserService {
 	public List<User> findAll();
 
 	public List<User> sort(String type);
@@ -19,5 +18,4 @@ public interface UserDao {
 	public void update(User user);
 
 	public void delete(long user_id);
-
 }

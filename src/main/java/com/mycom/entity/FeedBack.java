@@ -1,43 +1,42 @@
 package com.mycom.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@Entity
+@Table(name = "interviewfeedback")
 public class FeedBack {
-	public static final String TABLE_NAME = "interviewfeedback";
-	public static final String REASON_COLUMN = "reason";
-	public static final String FEEDBACKSTATE_COLUMN = "feedbackState";
-	public static final String IDINTERVIEWER_COLUMN = "idInterviewer";
-	public static final String IDINTERVIEW_COLUMN = "idInterview";
-	public static final String ID_COLUMN = "id";
-	
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id")
 	private Long id;
-	@Size(min=1)
+
+	@Size(min = 1)
+	@Column(name = "reason")
 	private String reason;
-	private String feedbackState;
-	private long idInterviewer;
-	private long idInterview;
-	private String interviewname;
-	private String interviewername;
-	
-	
-	
 
-	public String getInterviewname() {
-		return interviewname;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "name")
+	private FeedBackState feedbackState;
 
-	public void setInterviewname(String interviewname) {
-		this.interviewname = interviewname;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idInterviewer")
+	private User interviewer;
 
-	public String getInterviewername() {
-		return interviewername;
-	}
-
-	public void setInterviewername(String interviewername) {
-		this.interviewername = interviewername;
-	}
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idInterview")
+	private Interview interview;
 
 	public Long getId() {
 		return id;
@@ -47,30 +46,6 @@ public class FeedBack {
 		this.id = id;
 	}
 
-	public String getFeedbackState() {
-		return feedbackState;
-	}
-
-	public void setFeedbackState(String feedbackState) {
-		this.feedbackState = feedbackState;
-	}
-
-	public long getIdInterviewer() {
-		return idInterviewer;
-	}
-
-	public void setIdInterviewer(long idInterviewer) {
-		this.idInterviewer = idInterviewer;
-	}
-
-	public long getIdInterview() {
-		return idInterview;
-	}
-
-	public void setIdInterview(long idInterview) {
-		this.idInterview = idInterview;
-	}
-
 	public String getReason() {
 		return reason;
 	}
@@ -78,5 +53,29 @@ public class FeedBack {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	
+
+	public FeedBackState getFeedbackState() {
+		return feedbackState;
+	}
+
+	public void setFeedbackState(FeedBackState feedbackState) {
+		this.feedbackState = feedbackState;
+	}
+
+	public User getInterviewer() {
+		return interviewer;
+	}
+
+	public void setInterviewer(User interviewer) {
+		this.interviewer = interviewer;
+	}
+
+	public Interview getInterview() {
+		return interview;
+	}
+
+	public void setInterview(Interview interview) {
+		this.interview = interview;
+	}
+
 }

@@ -9,7 +9,8 @@ import java.util.List;
 
 import com.mycom.controller.FeedbackController;
 import com.mycom.entity.FeedBack;
-import com.mycom.jdbc.JdbcFeedBackDao;
+import com.mycom.service.FeedBackService;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,7 @@ import org.springframework.validation.BindingResult;
 public class FeedbackControllerTest {
 
     @Mock
-    private JdbcFeedBackDao dao;
+    private FeedBackService service;
 
     @InjectMocks
     private FeedbackController controller;
@@ -41,15 +42,15 @@ public class FeedbackControllerTest {
 
         feedBack = new FeedBack();
         feedBack.setId(new Long(1));
-        feedBack.setFeedbackState("awaiting");
-        feedBack.setIdInterview(1);
-        feedBack.setIdInterviewer(1);
+        //feedBack.setFeedbackState("awaiting");
+        //feedBack.setIdInterview(1L);
+        //feedBack.setIdInterviewer(1);
         feedBack.setReason("because");
 
         feedBack1 = new FeedBack();
-        feedBack1.setFeedbackState("success");
-        feedBack1.setIdInterview(2);
-        feedBack1.setIdInterviewer(2);
+        //feedBack1.setFeedbackState("success");
+        //feedBack1.setIdInterview(2);
+        //feedBack1.setIdInterviewer(2);
         feedBack1.setReason("because");
 
 
@@ -64,7 +65,7 @@ public class FeedbackControllerTest {
 
     @Test
     public void FeedBackAllTest() {
-        when(dao.findAll()).thenReturn(feedBacks);
+        when(service.findAll()).thenReturn(feedBacks);
         assertEquals(controller.FeedBackAll(),feedBacks);
     }
 
@@ -88,8 +89,14 @@ public class FeedbackControllerTest {
     
     @Test
     public void FiterFeedBackTest() {
-    	when(dao.findByState(feedBack.getFeedbackState())).thenReturn(feedBacks);
-    	assertEquals(controller.FilterFeedBack(feedBack.getFeedbackState()),feedBacks);
+    	when(service.findByState("success")).thenReturn(feedBacks);
+    	assertEquals(controller.FilterFeedBack("success"),feedBacks);
+    }
+    
+    @Test
+    public void SortFeedBackTest() {
+    	when(service.sort("name")).thenReturn(feedBacks);
+    	assertEquals(controller.SortFeedBack("name"),feedBacks);
     }
 
 }

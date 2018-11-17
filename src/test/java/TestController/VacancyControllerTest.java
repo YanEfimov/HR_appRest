@@ -18,13 +18,13 @@ import org.springframework.validation.BindingResult;
 
 import com.mycom.controller.VacancyController;
 import com.mycom.entity.Vacancy;
-import com.mycom.jdbc.JdbcVacancyDao;
+import com.mycom.service.VacancyService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class VacancyControllerTest {
 	
 	@Mock
-	private JdbcVacancyDao dao;
+	private VacancyService service;
 	
 	@InjectMocks
 	private VacancyController controller;
@@ -38,7 +38,7 @@ public class VacancyControllerTest {
 	public void InitData() {
 		vacancy = new Vacancy();
 		vacancy.setExperienceYearRequire(3);
-		vacancy.setIdDeveloper(1);
+		//vacancy.setIdDeveloper(1);
 		vacancy.setPosition("fdsfsdfsd");
 		vacancy.setSalaryfrom(1223);
 		vacancy.setSalaryto(2123);
@@ -49,7 +49,7 @@ public class VacancyControllerTest {
 		updateVacancy.setPosition("dfsfsdfsd");
 		updateVacancy.setSalaryfrom(1213);
 		updateVacancy.setSalaryto(2134);
-		updateVacancy.setIdDeveloper(2);
+		//updateVacancy.setIdDeveloper(2);
 		
 		vacancys = new LinkedList<Vacancy>();
 		vacancys.add(vacancy);
@@ -57,7 +57,7 @@ public class VacancyControllerTest {
 	
 	@Test
 	public void vacancyAllTest() {
-		when(dao.findAll()).thenReturn(vacancys);
+		when(service.findAll()).thenReturn(vacancys);
 		assertEquals(controller.VacancyAll(),vacancys);
 	}
 	
@@ -84,20 +84,8 @@ public class VacancyControllerTest {
 	}
 	
 	@Test
-	public void vacancySortSalaryTo() {
-		when(dao.sortForSalaryTo()).thenReturn(vacancys);
-		assertEquals(controller.VacancySortSalaryTo(),vacancys);
-	}
-	
-	@Test
-	public void vacancySortSalaryFrom() {
-		when(dao.sortForSalaryFrom()).thenReturn(vacancys);
-		assertEquals(controller.VacancySortSalaryFrom(),vacancys);
-	}
-	
-	@Test
-	public void vacancySortExperience() {
-		when(dao.sortForExperience()).thenReturn(vacancys);
-		assertEquals(controller.SortExperience(),vacancys);
+	public void vacancySortTest() {
+		when(service.sort("salaryto")).thenReturn(vacancys);
+		assertEquals(controller.VacancySort("salaryto"),vacancys);
 	}
 }

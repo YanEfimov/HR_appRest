@@ -1,11 +1,10 @@
-package com.mycom.dao;
-
-import com.mycom.entity.Candidate;
+package com.mycom.service;
 
 import java.util.List;
 
-public interface CandidateDao {
+import com.mycom.entity.Candidate;
 
+public interface CandidateService {
 	public List<Candidate> findAll();
 
 	public List<Candidate> sort(String type);

@@ -19,13 +19,13 @@ import org.springframework.validation.BindingResult;
 
 import com.mycom.controller.UserController;
 import com.mycom.entity.User;
-import com.mycom.jdbc.JdbcUserDao;
+import com.mycom.service.UserService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserControllerTest {
 	
 	@Mock
-    private JdbcUserDao dao;
+    private UserService service;
     
 	@InjectMocks
     private UserController controller;
@@ -81,19 +81,19 @@ public class UserControllerTest {
 	
 	@Test
 	public void UserAllTest() {
-		when(dao.findAll()).thenReturn(users);
+		when(service.findAll()).thenReturn(users);
 		assertEquals(controller.UserAll(),users);
 	}
 	
 	@Test
 	public void UserFilterTest() {
-		when(dao.findByRole(user.getRole())).thenReturn(users);
+		when(service.findByRole(user.getRole())).thenReturn(users);
 		assertEquals(controller.FilterUser(user.getRole()),users);
 	}
 	
 	@Test
 	public void UserSortNameTest() {
-		when(dao.findAllSortName()).thenReturn(users);
-		assertEquals(controller.UserSortName(),users);
+		when(service.sort("role")).thenReturn(users);
+		assertEquals(controller.UserSort("role"),users);
 	}
 }

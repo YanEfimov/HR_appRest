@@ -19,17 +19,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.mycom.entity.User;
-import com.mycom.jdbc.JdbcUserDao;
+import com.mycom.service.UserService;
+import com.mycom.tdt.TemplateDto;
+import com.mycom.tdt.Userdto;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
-	
+
 	@Autowired
-	private JdbcUserDao jdbcuserdao;
-	
-	private static List<User> list;
-	
+	private UserService service;
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
 	@ResponseBody
@@ -37,10 +37,10 @@ public class UserController {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
-		if (user.getId()!=null)
-			jdbcuserdao.update(user);
-		else 
-			jdbcuserdao.insert(user);
+		if (user.getId() != null)
+			service.update(user);
+		else
+			service.insert(user);
 		return user;
 	}
 
@@ -48,31 +48,28 @@ public class UserController {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void UserDelete(@RequestParam(value = "id") Long id) {
-		jdbcuserdao.delete(id);
+		service.delete(id);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	@ResponseBody
-	public List<User> FilterUser(@RequestParam(value = "type") String type) {
-		list = jdbcuserdao.findByRole(type);
-		return list;
+	public List<Userdto> FilterUser(@RequestParam(value = "role") String role) {
+		return TemplateDto.parseUserdto(service.findByRole(role));
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/sortname", method = RequestMethod.GET)
+	@RequestMapping(value = "/sort", method = RequestMethod.GET)
 	@ResponseBody
-	public List<User> UserSortName() {
-		list = jdbcuserdao.findAllSortName();
-		return list;
+	public List<Userdto> UserSort(@RequestParam(value = "type") String type) {
+		return TemplateDto.parseUserdto(service.sort(type));
 	}
-	
+
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<User> UserAll() {
-		list = jdbcuserdao.findAll();
-		return list;
+	public List<Userdto> UserAll() {
+		return TemplateDto.parseUserdto(service.findAll());
 	}
-	
+
 }

@@ -1,11 +1,10 @@
-package com.mycom.dao;
-
-import com.mycom.entity.Vacancy;
+package com.mycom.service;
 
 import java.util.List;
 
-public interface VacancyDao {
+import com.mycom.entity.Vacancy;
 
+public interface VacancyService {
 	public List<Vacancy> findAll();
 
 	public List<Vacancy> sort(String type);
@@ -17,5 +16,4 @@ public interface VacancyDao {
 	public void update(Vacancy vacancy);
 
 	public void delete(long vacancy_id);
-
 }

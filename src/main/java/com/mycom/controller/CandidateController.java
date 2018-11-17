@@ -18,76 +18,58 @@ import org.springframework.web.bind.annotation.*;
 import com.mycom.entity.Candidate;
 import com.mycom.entity.CandidateState;
 import com.mycom.entity.Skill;
-import com.mycom.jdbc.JdbcCandidateDao;
-import com.mycom.jdbc.JdbcCandidateStateDao;
-import com.mycom.jdbc.JdbcSkillDao;
+import com.mycom.service.CandidateService;
+import com.mycom.tdt.Candidatedto;
+import com.mycom.tdt.TemplateDto;
 
 @RestController
 @RequestMapping("/candidate")
 public class CandidateController {
-	
+
 	@Autowired
-	private JdbcCandidateDao jdbccandidatedao;
-	
-	@Autowired
-	private JdbcCandidateStateDao jdbccandidatestatedao;
-	
-	@Autowired
-	private JdbcSkillDao jdbcskilldao;
-	
-	private List<Candidate> list;
-	
+	private CandidateService service;
+
 	@ResponseStatus(HttpStatus.CREATED)
 	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
 	@ResponseBody
-	public Candidate SaveOrUpdate(@Valid @RequestBody Candidate candidate,BindingResult bindingResult) throws BindException {
+	public Candidate SaveOrUpdate(@Valid @RequestBody Candidate candidate, BindingResult bindingResult)
+			throws BindException {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
-		if (candidate.getId()!=null)
-			jdbccandidatedao.update(candidate);
+		if (candidate.getId() != null)
+			service.update(candidate);
 		else
-			jdbccandidatedao.insert(candidate);
+			service.insert(candidate);
 		return candidate;
 	}
-	
+
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
-	public void CandidateDelete(@RequestParam(value="id") Long id) {
-		jdbccandidatedao.delete(id);
+	public void CandidateDelete(@RequestParam(value = "id") Long id) {
+		service.delete(id);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Candidate> CandidateFilter(@RequestParam(value = "state") String state) {
-		list = jdbccandidatedao.findByState(state);
-		return list;
+	public List<Candidatedto> CandidateFilter(@RequestParam(value = "state") String state) {
+		return TemplateDto.parseCandidatedto(service.findByState(state));
 	}
 
 	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/sortname", method = RequestMethod.GET)
+	@RequestMapping(value = "/sort", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Candidate> CandidateSortName() {
-		list = jdbccandidatedao.sortNameCandidate();
-		return list;
-	}
-
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/sortsalary", method = RequestMethod.GET)
-	@ResponseBody
-	public List<Candidate> CandidateSortSalary() {
-		list = jdbccandidatedao.sortSalaryCandidate();
-		return list;
+	public List<Candidatedto> CandidateSort(@RequestParam(value = "type") String type) {
+		return TemplateDto.parseCandidatedto(service.sort(type));
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Candidate> CandidateList(){
-		list = jdbccandidatedao.findAll();
-		return list;
+	public List<Candidatedto> CandidateList() {
+		return TemplateDto.parseCandidatedto(service.findAll());
 	}
-	
+
 }

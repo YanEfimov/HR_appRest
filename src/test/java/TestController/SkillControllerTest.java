@@ -21,13 +21,13 @@ import org.springframework.validation.BindingResult;
 
 import com.mycom.controller.SkillController;
 import com.mycom.entity.Skill;
-import com.mycom.jdbc.JdbcSkillDao;
+import com.mycom.service.SkillService;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SkillControllerTest {
 	
 	@Mock
-    private JdbcSkillDao dao;
+    private SkillService service;
     
 	@InjectMocks
     private SkillController controller;
@@ -46,7 +46,7 @@ public class SkillControllerTest {
 	
 	@Test
 	public void getSkillsTest() {
-		when(dao.findAll()).thenReturn(skills);
+		when(service.findAll()).thenReturn(skills);
 		assertEquals(controller.getSkills(),skills);
 	}
 	
@@ -69,11 +69,5 @@ public class SkillControllerTest {
         when(result.hasErrors())
                 .thenReturn(false);
         assertEquals(controller.SaveSkill(skill, result),skill);
-	}
-	
-	@Test
-	public void SkillSortTest() {
-		when(dao.sortSkill()).thenReturn(skills);
-		assertEquals(controller.SkillSort(),skills);
 	}
 }

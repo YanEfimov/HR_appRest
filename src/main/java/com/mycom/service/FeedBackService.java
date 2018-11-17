@@ -1,11 +1,10 @@
-package com.mycom.dao;
-
-import com.mycom.entity.FeedBack;
+package com.mycom.service;
 
 import java.util.List;
 
-public interface FeedBackDao {
+import com.mycom.entity.FeedBack;
 
+public interface FeedBackService {
 	public List<FeedBack> findAll();
 
 	public List<FeedBack> findByState(String feedbackState);

@@ -1,10 +1,8 @@
 package com.mycom.controller;
 
 import com.mycom.entity.FeedBack;
-import com.mycom.jdbc.JdbcFeedBackDao;
-import com.mycom.jdbc.JdbcFeedBackStateDao;
-import com.mycom.jdbc.JdbcInterviewDao;
-import com.mycom.jdbc.JdbcUserDao;
+import com.mycom.service.FeedBackService;
+
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,50 +22,49 @@ import java.util.List;
 public class FeedbackController {
 
 	@Autowired
-	private JdbcFeedBackDao jdbcfeedbackdao;
-	@Autowired
-	private JdbcFeedBackStateDao jdbcfeedbackstatedao;
-	@Autowired
-	private JdbcInterviewDao jdbcinterviewdao;
-	@Autowired
-	private JdbcUserDao jdbcuserdao;
+	private FeedBackService service;
 
-	private List<FeedBack> list;
-	
-	 @ResponseStatus(HttpStatus.CREATED)
-	 @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
-	 @ResponseBody
-	 public FeedBack SaveFeedback(@Valid @RequestBody FeedBack feedBack, BindingResult bindingResult) throws BindException {
-		 if (bindingResult.hasErrors()) {
-			 throw new BindException(bindingResult);
-		 }
-		 if (feedBack.getId()!=null)
-			 jdbcfeedbackdao.update(feedBack);
-		 else
-			 jdbcfeedbackdao.insert(feedBack);
-		 return feedBack;
-	 }
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
+	@ResponseBody
+	public FeedBack SaveFeedback(@Valid @RequestBody FeedBack feedBack, BindingResult bindingResult)
+			throws BindException {
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		}
+		if (feedBack.getId() != null)
+			service.update(feedBack);
+		else
+			service.insert(feedBack);
+		return feedBack;
+	}
 
-	 @ResponseStatus(HttpStatus.NO_CONTENT)
-	 @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	 @ResponseBody
-	 public void FeedbackDelete(@RequestParam(value = "id") Long id) {
-		 FeedBack feedBack = jdbcfeedbackdao.findById(id);
-		 jdbcfeedbackdao.delete(id);
-	 }
-	 @ResponseStatus(HttpStatus.OK)
-	 @RequestMapping(value = "/list", method = RequestMethod.GET)
-	 @ResponseBody
-	 public List<FeedBack> FeedBackAll() {
-		 list = jdbcfeedbackdao.findAll();
-		 return list;
-	 }
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void FeedbackDelete(@RequestParam(value = "id") Long id) {
+		FeedBack feedBack = service.findById(id);
+		service.delete(id);
+	}
 
-	@ResponseStatus(HttpStatus.OK) 
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<FeedBack> FeedBackAll() {
+		return service.findAll();
+	}
+
+	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/filter", method = RequestMethod.GET)
 	@ResponseBody
-	public List<FeedBack> FilterFeedBack(@RequestParam(value = "type") String type) {
-		list = jdbcfeedbackdao.findByState(type);
-		return list;
+	public List<FeedBack> FilterFeedBack(@RequestParam(value = "state") String state) {
+		return service.findByState(state);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/sort", method = RequestMethod.GET)
+	@ResponseBody
+	public List<FeedBack> SortFeedBack(@RequestParam(value = "type") String type) {
+		return service.sort(type);
 	}
 }

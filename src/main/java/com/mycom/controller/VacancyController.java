@@ -21,77 +21,48 @@ import org.springframework.web.bind.annotation.*;
 import com.mycom.entity.Skill;
 import com.mycom.entity.User;
 import com.mycom.entity.Vacancy;
-import com.mycom.jdbc.JdbcSkillDao;
-import com.mycom.jdbc.JdbcUserDao;
-import com.mycom.jdbc.JdbcVacancyDao;
+import com.mycom.service.VacancyService;
 
 @RestController
 @RequestMapping("/vacancy")
 public class VacancyController {
-	
+
 	@Autowired
-	private JdbcVacancyDao jdbcvacancydao;
-	
-	@Autowired
-	private JdbcSkillDao jdbcskilldao;
-	
-	@Autowired
-	private JdbcUserDao jdbcuserdao;
-	
-	private static List<Vacancy> list;
+	private VacancyService service;
 
-	 @ResponseStatus(HttpStatus.CREATED)
-	 @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
-	 @ResponseBody
-	 public Vacancy SaveVacancy(@Valid @RequestBody Vacancy vacancy, BindingResult bindingResult) throws BindException {
-		 if (bindingResult.hasErrors()) {
-			 throw new BindException(bindingResult);
-		 }
-		 if (vacancy.getId()!=null)
-			 jdbcvacancydao.update(vacancy);
-		 else
-			 jdbcvacancydao.insert(vacancy);
-		 return vacancy;
-	 }
-
-	 @ResponseStatus(HttpStatus.NO_CONTENT)
-	 @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	 @ResponseBody
-	 public void VacancyDelete(@RequestParam(value = "id") Long id) {
-		 jdbcvacancydao.delete(id);
-	 }
-
-	 @ResponseStatus(HttpStatus.OK)
-	 @RequestMapping(value = "/list", method = RequestMethod.GET)
-	 @ResponseBody
-	 public List<Vacancy> VacancyAll() {
-		 list = jdbcvacancydao.findAll();
-		 return list;
-	 }
-
-
-	 @ResponseStatus(HttpStatus.OK)
-	 @RequestMapping(value = "/sortSalaryTo", method = RequestMethod.GET)
-	 @ResponseBody
-	 public List<Vacancy> VacancySortSalaryTo() {
-		 list = jdbcvacancydao.sortForSalaryTo();
-		 return list;
-	 }
-
-	 @ResponseStatus(HttpStatus.OK)
-	 @RequestMapping(value = "/sortSalaryFrom", method = RequestMethod.GET)
-	 @ResponseBody
-	 public List<Vacancy> VacancySortSalaryFrom() {
-		 list = jdbcvacancydao.sortForSalaryFrom();
-		 return list;
-	 }
-	 
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/SortExperience", method = RequestMethod.GET)
+	@ResponseStatus(HttpStatus.CREATED)
+	@RequestMapping(value = "/saveOrUpdate", method = RequestMethod.PUT)
 	@ResponseBody
-	public List<Vacancy> SortExperience() {
-		list = jdbcvacancydao.sortForExperience();
-		return list;
+	public Vacancy SaveVacancy(@Valid @RequestBody Vacancy vacancy, BindingResult bindingResult) throws BindException {
+		if (bindingResult.hasErrors()) {
+			throw new BindException(bindingResult);
+		}
+		if (vacancy.getId() != null)
+			service.update(vacancy);
+		else
+			service.insert(vacancy);
+		return vacancy;
 	}
-	
+
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	@ResponseBody
+	public void VacancyDelete(@RequestParam(value = "id") Long id) {
+		service.delete(id);
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Vacancy> VacancyAll() {
+		return service.findAll();
+	}
+
+	@ResponseStatus(HttpStatus.OK)
+	@RequestMapping(value = "/sort", method = RequestMethod.GET)
+	@ResponseBody
+	public List<Vacancy> VacancySort(@RequestParam(value = "type") String type) {
+		return service.sort(type);
+	}
+
 }

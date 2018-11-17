@@ -17,29 +17,29 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.mycom.entity.Skill;
-import com.mycom.jdbc.JdbcSkillDao;
+import com.mycom.service.SkillService;
+import com.mycom.tdt.Skilldto;
+import com.mycom.tdt.TemplateDto;
 
 @RestController
 @RequestMapping("/skill")
 public class SkillController {
 
 	@Autowired
-	private JdbcSkillDao jdbcskilldao;
+	private SkillService skillservice;
 
-	private List<Skill> list;
-	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@RequestMapping(value="/delete", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	@ResponseBody
 	public void SkillDelete(@RequestParam(value = "name") String name) {
-		jdbcskilldao.delete(name);
+		skillservice.delete(name);
 	}
 
 	@ResponseStatus(HttpStatus.OK)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Skill> getSkills() {
-		return jdbcskilldao.findAll();
+	public List<Skilldto> getSkills() {
+		return TemplateDto.parseSkill(skillservice.findAll());
 	}
 
 	@ResponseStatus(HttpStatus.CREATED)
@@ -49,15 +49,8 @@ public class SkillController {
 		if (bindingResult.hasErrors()) {
 			throw new BindException(bindingResult);
 		}
-		jdbcskilldao.insert(skill);
+		skillservice.insert(skill);
 		return skill;
 	}
 
-	@ResponseStatus(HttpStatus.OK)
-	@RequestMapping(value = "/sort", method = RequestMethod.GET)
-	@ResponseBody
-	public List<Skill> SkillSort() {
-		list = jdbcskilldao.sortSkill();
-		return list;
-	}
 }
